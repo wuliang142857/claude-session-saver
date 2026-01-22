@@ -1,11 +1,11 @@
 ---
-allowed-tools: Bash(cat:*), Bash(jq:*)
+allowed-tools: Bash(cat:*), Bash(python3:*)
 description: List all named sessions
 ---
 
 ## Context
 
-- Saved sessions: !`cat ~/.claude/session-names.json 2>/dev/null || echo '{}'`
+- Saved sessions: !`python3 ~/.claude/plugins/claude-session-saver/scripts/claude_session_saver_cli.py list 2>/dev/null || cat ~/.claude/session-names.json 2>/dev/null || echo '{}'`
 
 ## Your task
 

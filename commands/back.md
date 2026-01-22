@@ -1,11 +1,11 @@
 ---
-allowed-tools: Bash(cat:*), Bash(jq:*), Bash(tmux:*)
+allowed-tools: Bash(cat:*), Bash(python3:*), Bash(tmux:*)
 description: Restore a named session (usage: /back "session name")
 ---
 
 ## Context
 
-- Saved sessions: !`cat ~/.claude/session-names.json 2>/dev/null || echo '{}'`
+- Saved sessions: !`python3 ~/.claude/plugins/claude-session-saver/scripts/claude_session_saver_cli.py list 2>/dev/null || cat ~/.claude/session-names.json 2>/dev/null || echo '{}'`
 - Currently in tmux: !`[ -n "$TMUX" ] && echo "yes" || echo "no"`
 
 ## Your task
