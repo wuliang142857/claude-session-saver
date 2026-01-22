@@ -1,0 +1,11 @@
+{
+  "name": "claude-session-saver",
+  "description": "Save, list, and restore named Claude Code sessions for easy context switching",
+  "version": "1.0.0",
+  "author": {
+    "name": "wuliang142857",
+    "email": "wuliang@wuliang142857.me"
+  },
+  "repository": "https://github.com/wuliang142857/claude-session-saver",
+  "keywords": ["session", "memory", "context", "workflow"]
+}
