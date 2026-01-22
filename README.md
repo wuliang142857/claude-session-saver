@@ -23,8 +23,13 @@ curl -fsSL https://raw.githubusercontent.com/wuliang142857/claude-session-saver/
 ### Option 2: Manual Install
 
 ```bash
-git clone https://github.com/wuliang142857/claude-session-saver.git
-cp -r claude-session-saver ~/.claude/plugins/
+# Clone to plugins directory
+git clone https://github.com/wuliang142857/claude-session-saver.git ~/.claude/plugins/claude-session-saver
+
+# Create symlinks to commands directory
+ln -sf ~/.claude/plugins/claude-session-saver/commands/save.md ~/.claude/commands/
+ln -sf ~/.claude/plugins/claude-session-saver/commands/sessions.md ~/.claude/commands/
+ln -sf ~/.claude/plugins/claude-session-saver/commands/back.md ~/.claude/commands/
 ```
 
 ## Update / Uninstall

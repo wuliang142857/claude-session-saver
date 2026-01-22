@@ -23,8 +23,13 @@ curl -fsSL https://raw.githubusercontent.com/wuliang142857/claude-session-saver/
 ### 方式二：手动安装
 
 ```bash
-git clone https://github.com/wuliang142857/claude-session-saver.git
-cp -r claude-session-saver ~/.claude/plugins/
+# 克隆到 plugins 目录
+git clone https://github.com/wuliang142857/claude-session-saver.git ~/.claude/plugins/claude-session-saver
+
+# 创建符号链接到 commands 目录
+ln -sf ~/.claude/plugins/claude-session-saver/commands/save.md ~/.claude/commands/
+ln -sf ~/.claude/plugins/claude-session-saver/commands/sessions.md ~/.claude/commands/
+ln -sf ~/.claude/plugins/claude-session-saver/commands/back.md ~/.claude/commands/
 ```
 
 ## 更新 / 卸载

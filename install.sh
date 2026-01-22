@@ -6,6 +6,7 @@ set -e
 
 PLUGIN_NAME="claude-session-saver"
 PLUGIN_DIR="$HOME/.claude/plugins/$PLUGIN_NAME"
+COMMANDS_DIR="$HOME/.claude/commands"
 REPO_URL="https://github.com/wuliang142857/claude-session-saver"
 RAW_URL="https://raw.githubusercontent.com/wuliang142857/claude-session-saver/main"
 
@@ -58,28 +59,22 @@ check_requirements() {
 }
 
 install_with_git() {
-    print_info "Installing via git clone..."
+    print_info "Downloading plugin via git..."
     mkdir -p "$(dirname "$PLUGIN_DIR")"
 
     if [ -d "$PLUGIN_DIR" ]; then
-        print_error "Plugin already installed at $PLUGIN_DIR"
-        print_info "Use 'update' to update or 'uninstall' to remove first."
-        exit 1
+        print_warning "Plugin directory exists, updating..."
+        cd "$PLUGIN_DIR"
+        git pull --ff-only
+    else
+        git clone --depth 1 "$REPO_URL.git" "$PLUGIN_DIR"
     fi
-
-    git clone --depth 1 "$REPO_URL.git" "$PLUGIN_DIR"
-    print_success "Cloned repository to $PLUGIN_DIR"
+    print_success "Plugin downloaded to $PLUGIN_DIR"
 }
 
 install_with_curl() {
-    print_info "Installing via curl..."
+    print_info "Downloading plugin via curl..."
     mkdir -p "$PLUGIN_DIR/commands" "$PLUGIN_DIR/scripts" "$PLUGIN_DIR/.claude-plugin"
-
-    if [ -f "$PLUGIN_DIR/scripts/claude_session_saver_cli.py" ]; then
-        print_error "Plugin already installed at $PLUGIN_DIR"
-        print_info "Use 'update' to update or 'uninstall' to remove first."
-        exit 1
-    fi
 
     # Download files
     curl -fsSL "$RAW_URL/scripts/claude_session_saver_cli.py" -o "$PLUGIN_DIR/scripts/claude_session_saver_cli.py"
@@ -91,11 +86,47 @@ install_with_curl() {
     curl -fsSL "$RAW_URL/LICENSE" -o "$PLUGIN_DIR/LICENSE"
 
     chmod +x "$PLUGIN_DIR/scripts/claude_session_saver_cli.py"
-    print_success "Downloaded all plugin files"
+    print_success "Plugin downloaded to $PLUGIN_DIR"
+}
+
+create_symlinks() {
+    print_info "Creating command symlinks..."
+    mkdir -p "$COMMANDS_DIR"
+
+    ln -sf "$PLUGIN_DIR/commands/save.md" "$COMMANDS_DIR/save.md"
+    ln -sf "$PLUGIN_DIR/commands/sessions.md" "$COMMANDS_DIR/sessions.md"
+    ln -sf "$PLUGIN_DIR/commands/back.md" "$COMMANDS_DIR/back.md"
+
+    print_success "Symlinks created in $COMMANDS_DIR"
+}
+
+remove_symlinks() {
+    print_info "Removing command symlinks..."
+
+    for cmd in save.md sessions.md back.md; do
+        if [ -L "$COMMANDS_DIR/$cmd" ]; then
+            rm -f "$COMMANDS_DIR/$cmd"
+        fi
+    done
+
+    print_success "Symlinks removed"
 }
 
 do_install() {
     print_info "Starting installation..."
+
+    # Check if already installed
+    if [ -L "$COMMANDS_DIR/save.md" ] && [ -d "$PLUGIN_DIR" ]; then
+        print_warning "Plugin already installed."
+        read -p "Reinstall? [y/N] " -n 1 -r
+        echo
+        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+            echo "Cancelled."
+            exit 0
+        fi
+        remove_symlinks
+        rm -rf "$PLUGIN_DIR"
+    fi
 
     if check_requirements; then
         install_with_git
@@ -104,6 +135,7 @@ do_install() {
     fi
 
     chmod +x "$PLUGIN_DIR/scripts/claude_session_saver_cli.py"
+    create_symlinks
 
     echo ""
     print_success "Installation complete!"
@@ -128,25 +160,29 @@ do_update() {
         print_info "Updating via git pull..."
         cd "$PLUGIN_DIR"
         git pull --ff-only
-        print_success "Updated successfully!"
     else
         print_info "Reinstalling via curl..."
         rm -rf "$PLUGIN_DIR"
         install_with_curl
-        print_success "Updated successfully!"
     fi
+
+    # Recreate symlinks in case paths changed
+    create_symlinks
+
+    print_success "Updated successfully!"
 }
 
 do_uninstall() {
     print_info "Starting uninstall..."
 
-    if [ ! -d "$PLUGIN_DIR" ]; then
+    if [ ! -d "$PLUGIN_DIR" ] && [ ! -L "$COMMANDS_DIR/save.md" ]; then
         print_error "Plugin not installed."
         exit 1
     fi
 
+    remove_symlinks
     rm -rf "$PLUGIN_DIR"
-    print_success "Plugin uninstalled from $PLUGIN_DIR"
+    print_success "Plugin uninstalled"
 
     # Ask about session data
     if [ -f "$HOME/.claude/session-names.json" ]; then
