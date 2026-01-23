@@ -8,7 +8,7 @@ description: Stash current session with a name (usage: /stash:push "session name
 - Session database: ~/.claude/session-names.json
 - Current working directory: !`pwd`
 - Project path (encoded): !`pwd | sed 's|/|-|g'`
-- Current session ID: !`PROJECT_PATH=$(pwd | sed 's|/|-|g'); ls -t ~/.claude/projects/${PROJECT_PATH}/*.jsonl 2>/dev/null | head -1 | xargs -I{} basename {} .jsonl`
+- Current session ID: !`find ~/.claude/projects -name "*.jsonl" -type f 2>/dev/null | xargs ls -t 2>/dev/null | head -1 | xargs -I{} basename {} .jsonl`
 - Saved sessions: !`cat ~/.claude/session-names.json 2>/dev/null || echo '{}'`
 - Script path: !`dirname "$(dirname "$(readlink -f "$0" 2>/dev/null || echo "$0")")" 2>/dev/null`/scripts/claude_session_saver_cli.py
 
