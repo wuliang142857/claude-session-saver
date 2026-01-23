@@ -5,7 +5,7 @@ description: List all stashed sessions
 
 ## Context
 
-- Saved sessions: !`python3 ~/.claude/plugins/stash/scripts/claude_session_saver_cli.py list 2>/dev/null || cat ~/.claude/session-names.json 2>/dev/null || echo '{}'`
+- Saved sessions: !`python3 ~/.claude/plugins/marketplaces/wuliang142857/plugins/stash/scripts/claude_session_saver_cli.py list 2>/dev/null || python3 ~/.claude/plugins/local/stash/scripts/claude_session_saver_cli.py list 2>/dev/null || cat ~/.claude/session-names.json 2>/dev/null || echo '{}'`
 
 ## Your task
 

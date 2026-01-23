@@ -73,6 +73,29 @@ def cmd_delete(name):
         return 1
 
 
+def cmd_current():
+    """
+    2026-01-23: Get the current session ID by finding the most recently modified .jsonl file.
+    Scans all project directories under ~/.claude/projects/
+    """
+    projects_dir = Path.home() / ".claude" / "projects"
+    if not projects_dir.exists():
+        print("", end="")
+        return 1
+
+    # Find all .jsonl files and get the most recent one
+    jsonl_files = list(projects_dir.glob("*/*.jsonl"))
+    if not jsonl_files:
+        print("", end="")
+        return 1
+
+    # Sort by modification time, most recent first
+    most_recent = max(jsonl_files, key=lambda f: f.stat().st_mtime)
+    session_id = most_recent.stem  # filename without extension
+    print(session_id)
+    return 0
+
+
 def print_usage():
     """Print usage information."""
     usage = """
@@ -83,6 +106,7 @@ Commands:
   list                       List all saved sessions (JSON output)
   get <name>                 Get session ID by name
   delete <name>              Delete a session by name
+  current                    Get current session ID (most recent .jsonl)
 
 Environment:
   SESSION_DB_PATH            Override default database path
@@ -106,6 +130,8 @@ def main():
         sys.exit(cmd_get(sys.argv[2]))
     elif cmd == "delete" and len(sys.argv) == 3:
         sys.exit(cmd_delete(sys.argv[2]))
+    elif cmd == "current":
+        sys.exit(cmd_current())
     elif cmd in ("-h", "--help", "help"):
         print_usage()
     else:

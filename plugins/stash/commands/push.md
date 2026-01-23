@@ -5,12 +5,8 @@ description: Stash current session with a name (usage: /stash:push "session name
 
 ## Context
 
-- Session database: ~/.claude/session-names.json
-- Current working directory: !`pwd`
-- Project path (encoded): !`pwd | sed 's|/|-|g'`
-- Current session ID: !`find ~/.claude/projects -name "*.jsonl" -type f 2>/dev/null | xargs ls -t 2>/dev/null | head -1 | xargs -I{} basename {} .jsonl`
+- Current session ID: !`python3 ~/.claude/plugins/marketplaces/wuliang142857/plugins/stash/scripts/claude_session_saver_cli.py current 2>/dev/null || python3 ~/.claude/plugins/local/stash/scripts/claude_session_saver_cli.py current 2>/dev/null`
 - Saved sessions: !`cat ~/.claude/session-names.json 2>/dev/null || echo '{}'`
-- Script path: !`dirname "$(dirname "$(readlink -f "$0" 2>/dev/null || echo "$0")")" 2>/dev/null`/scripts/claude_session_saver_cli.py
 
 ## Your task
 
@@ -18,12 +14,15 @@ The user wants to save the current session. The argument is the session name (if
 
 Steps:
 
-1. Get the current session ID from context
-2. Use the Python script to save the session:
+1. Get the current session ID from context. If empty, tell user "Unable to detect current session ID" and stop.
+2. Use the Python script to save the session (try paths in order until one works):
    ```bash
-   python3 ~/.claude/plugins/stash/scripts/claude_session_saver_cli.py save "SessionName" "SessionID"
+   python3 ~/.claude/plugins/marketplaces/wuliang142857/plugins/stash/scripts/claude_session_saver_cli.py save "SessionName" "SessionID"
    ```
-   Note: If the plugin is installed elsewhere, adjust the path accordingly.
+   or:
+   ```bash
+   python3 ~/.claude/plugins/local/stash/scripts/claude_session_saver_cli.py save "SessionName" "SessionID"
+   ```
 3. Confirm to user: Done! Session saved as "name" (ID: xxx...)
 
 Only perform the save operation, nothing else.
