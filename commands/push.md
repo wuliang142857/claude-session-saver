@@ -1,6 +1,6 @@
 ---
 allowed-tools: Bash(ls:*), Bash(cat:*), Bash(echo:*), Bash(pwd:*), Bash(sed:*), Bash(python3:*)
-description: Save current session with a name (usage: /save "session name")
+description: Stash current session with a name (usage: /stash:push "session name")
 ---
 
 ## Context
@@ -21,7 +21,7 @@ Steps:
 1. Get the current session ID from context
 2. Use the Python script to save the session:
    ```bash
-   python3 ~/.claude/plugins/claude-session-saver/scripts/claude_session_saver_cli.py save "SessionName" "SessionID"
+   python3 ~/.claude/plugins/stash/scripts/claude_session_saver_cli.py save "SessionName" "SessionID"
    ```
    Note: If the plugin is installed elsewhere, adjust the path accordingly.
 3. Confirm to user: Done! Session saved as "name" (ID: xxx...)

@@ -1,50 +1,68 @@
-# Claude Session Saver
+# Stash
 
 [English](README.md) | [简体中文](README.zh-CN.md)
 
-Save and restore named Claude Code sessions for easy context switching.
+Save and restore named Claude Code sessions for easy context switching. Inspired by `git stash`.
 
 ## Commands
 
 | Command | Description |
 |---------|-------------|
-| `/save "name"` | Save current session with a name |
-| `/sessions` | List all saved sessions |
-| `/back "name"` | Restore a saved session |
+| `/stash:push "name"` | Save current session with a name |
+| `/stash:list` | List all saved sessions |
+| `/stash:pop "name"` | Restore a saved session |
+| `/stash:drop "name"` | Delete a saved session |
+
+## Requirements
+
+- Python 3 (pre-installed on macOS/Linux)
+- **tmux** or **screen** (optional, for auto-restore feature)
+
+### About tmux/screen Dependency
+
+The `/stash:pop` command supports automatic session restoration:
+
+| Environment | Behavior |
+|-------------|----------|
+| **In tmux** | Automatically opens a new window with the restored session and closes the current pane |
+| **In screen** | Automatically opens a new window with the restored session and closes the current window |
+| **Neither** | Displays the `claude --resume <session_id>` command for manual execution |
+
+If you want the seamless auto-restore experience, install tmux or screen:
+
+```bash
+# macOS
+brew install tmux
+# or
+brew install screen
+
+# Ubuntu/Debian
+sudo apt install tmux
+# or
+sudo apt install screen
+```
 
 ## Installation
 
-### Option 1: One-line Install
+In Claude Code, run the following commands:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/wuliang142857/claude-session-saver/main/install.sh | bash -s install
-```
+# Add the marketplace
+/plugin marketplace add wuliang142857/claude-stash
 
-### Option 2: Manual Install
-
-```bash
-# Clone to plugins directory
-git clone https://github.com/wuliang142857/claude-session-saver.git ~/.claude/plugins/claude-session-saver
-
-# Create symlinks to commands directory
-ln -sf ~/.claude/plugins/claude-session-saver/commands/save.md ~/.claude/commands/
-ln -sf ~/.claude/plugins/claude-session-saver/commands/sessions.md ~/.claude/commands/
-ln -sf ~/.claude/plugins/claude-session-saver/commands/back.md ~/.claude/commands/
+# Install the plugin
+/plugin install stash@wuliang142857
 ```
 
 ## Update / Uninstall
 
 ```bash
 # Update
-curl -fsSL https://raw.githubusercontent.com/wuliang142857/claude-session-saver/main/install.sh | bash -s update
+/plugin update stash@wuliang142857
 
 # Uninstall
-curl -fsSL https://raw.githubusercontent.com/wuliang142857/claude-session-saver/main/install.sh | bash -s uninstall
+/plugin uninstall stash@wuliang142857
 ```
-
-## Requirements
-
-- Python 3 (pre-installed on macOS/Linux)
 
 ## License
 
