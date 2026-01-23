@@ -12,7 +12,7 @@
       "name": "stash",
       "description": "Save, list, and restore named Claude Code sessions for easy context switching",
       "version": "1.0.0",
-      "source": "github:wuliang142857/claude-stash",
+      "source": "./plugins/stash",
       "category": "productivity"
     }
   ]

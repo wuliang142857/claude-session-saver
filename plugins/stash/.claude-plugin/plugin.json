@@ -1,0 +1,65 @@
+{
+  "name": "stash",
+  "displayName": "Stash - Session Manager",
+  "description": "Save, list, and restore named Claude Code sessions for easy context switching. Inspired by git stash.",
+  "version": "1.0.0",
+  "author": {
+    "name": "wuliang142857",
+    "email": "wuliang@wuliang142857.me",
+    "url": "https://github.com/wuliang142857"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wuliang142857/claude-stash"
+  },
+  "homepage": "https://github.com/wuliang142857/claude-stash#readme",
+  "bugs": {
+    "url": "https://github.com/wuliang142857/claude-stash/issues"
+  },
+  "keywords": [
+    "session",
+    "stash",
+    "context",
+    "workflow",
+    "memory",
+    "save",
+    "restore"
+  ],
+  "categories": [
+    "productivity",
+    "workflow"
+  ],
+  "engines": {
+    "claude-code": ">=1.0.0"
+  },
+  "dependencies": {
+    "python": ">=3.6"
+  },
+  "optionalDependencies": {
+    "tmux": "For auto-restore feature",
+    "screen": "Alternative to tmux for auto-restore"
+  },
+  "commands": [
+    {
+      "name": "push",
+      "description": "Save current session with a name",
+      "usage": "/stash:push \"session name\""
+    },
+    {
+      "name": "pop",
+      "description": "Restore a saved session",
+      "usage": "/stash:pop \"session name\""
+    },
+    {
+      "name": "list",
+      "description": "List all saved sessions",
+      "usage": "/stash:list"
+    },
+    {
+      "name": "drop",
+      "description": "Delete a saved session",
+      "usage": "/stash:drop \"session name\""
+    }
+  ]
+}
