@@ -12,6 +12,29 @@ Save and restore named Claude Code sessions for easy context switching. Inspired
 | `/stash:list` | List all saved sessions |
 | `/stash:pop "name"` | Restore a saved session |
 | `/stash:drop "name"` | Delete a saved session |
+| `/stash:export "name" "path"` | Export a session to zip file |
+| `/stash:export-all "path"` | Export all sessions to zip file |
+| `/stash:import "path"` | Import sessions from zip file |
+
+## Export/Import (Cross-Machine Migration)
+
+Sessions can be exported to zip files and imported on another machine:
+
+```bash
+# Export a single session
+/stash:export "my-session" "~/my-session.zip"
+
+# Export all sessions
+/stash:export-all "~/all-sessions.zip"
+
+# Import sessions (skips existing names by default)
+/stash:import "~/all-sessions.zip"
+
+# Import with overwrite (replaces existing sessions)
+/stash:import "~/all-sessions.zip" --overwrite
+```
+
+The export file contains session mappings and data, making it easy to backup or transfer sessions between machines.
 
 ## Requirements
 

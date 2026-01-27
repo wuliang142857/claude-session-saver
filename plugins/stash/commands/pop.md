@@ -5,7 +5,7 @@ description: Pop/restore a stashed session (usage: /stash:pop "session name")
 
 ## Context
 
-- Saved sessions: !`python3 ~/.claude/plugins/marketplaces/wuliang142857/plugins/stash/scripts/claude_session_saver_cli.py list 2>/dev/null || python3 ~/.claude/plugins/local/stash/scripts/claude_session_saver_cli.py list 2>/dev/null || cat ~/.claude/session-names.json 2>/dev/null || echo '{}'`
+- Saved sessions: !`python3 ~/.claude/plugins/marketplaces/wuliang142857/plugins/stash/scripts/stash.py list 2>/dev/null || python3 ~/.claude/plugins/local/stash/scripts/stash.py list 2>/dev/null || cat ~/.claude/session-names.json 2>/dev/null || echo '{}'`
 - Currently in tmux: !`[ -n "$TMUX" ] && echo "yes" || echo "no"`
 - Current tmux pane: !`echo "$TMUX_PANE"`
 - Currently in screen: !`[ -n "$STY" ] && echo "yes" || echo "no"`

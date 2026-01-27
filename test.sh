@@ -88,7 +88,7 @@ test_plugin_structure() {
         "commands/pop.md"
         "commands/list.md"
         "commands/drop.md"
-        "scripts/claude_session_saver_cli.py"
+        "scripts/stash.py"
     )
 
     for file in "${required_files[@]}"; do
@@ -185,34 +185,34 @@ test_command_syntax() {
 test_python_script() {
     print_section "Python Script Unit Tests"
 
-    local script="$PLUGIN_DIR/scripts/claude_session_saver_cli.py"
+    local script="$PLUGIN_DIR/scripts/stash.py"
     local test_db="$TEST_TEMP_DIR/sessions.json"
 
     # Clean up
     rm -f "$test_db"
 
-    # Test save
-    SESSION_DB_PATH="$test_db" python3 "$script" save "test-session" "test-id-12345" >/dev/null
+    # Test push
+    SESSION_DB_PATH="$test_db" python3 "$script" push "test-session" "test-id-12345" >/dev/null
     if grep -q "test-session" "$test_db"; then
-        print_success "save: basic save works"
+        print_success "push: basic push works"
     else
-        print_error "save: basic save failed"
+        print_error "push: basic push failed"
     fi
 
-    # Test save with Chinese characters
-    SESSION_DB_PATH="$test_db" python3 "$script" save "测试会话" "chinese-id-123" >/dev/null
+    # Test push with Chinese characters
+    SESSION_DB_PATH="$test_db" python3 "$script" push "测试会话" "chinese-id-123" >/dev/null
     if grep -q "测试会话" "$test_db"; then
-        print_success "save: Chinese characters work"
+        print_success "push: Chinese characters work"
     else
-        print_error "save: Chinese characters failed"
+        print_error "push: Chinese characters failed"
     fi
 
-    # Test save overwrites existing
-    SESSION_DB_PATH="$test_db" python3 "$script" save "test-session" "new-id-67890" >/dev/null
+    # Test push overwrites existing
+    SESSION_DB_PATH="$test_db" python3 "$script" push "test-session" "new-id-67890" >/dev/null
     if SESSION_DB_PATH="$test_db" python3 "$script" get "test-session" | grep -q "new-id-67890"; then
-        print_success "save: overwrite existing works"
+        print_success "push: overwrite existing works"
     else
-        print_error "save: overwrite existing failed"
+        print_error "push: overwrite existing failed"
     fi
 
     # Test list
@@ -245,19 +245,19 @@ test_python_script() {
         print_success "get: correctly fails for non-existing session"
     fi
 
-    # Test delete existing
-    SESSION_DB_PATH="$test_db" python3 "$script" delete "test-session" >/dev/null
+    # Test drop existing
+    SESSION_DB_PATH="$test_db" python3 "$script" drop "test-session" >/dev/null
     if ! grep -q '"test-session"' "$test_db"; then
-        print_success "delete: removes session"
+        print_success "drop: removes session"
     else
-        print_error "delete: failed to remove session"
+        print_error "drop: failed to remove session"
     fi
 
-    # Test delete non-existing
-    if SESSION_DB_PATH="$test_db" python3 "$script" delete "non-existing" 2>/dev/null; then
-        print_error "delete: should fail for non-existing session"
+    # Test drop non-existing
+    if SESSION_DB_PATH="$test_db" python3 "$script" drop "non-existing" 2>/dev/null; then
+        print_error "drop: should fail for non-existing session"
     else
-        print_success "delete: correctly fails for non-existing session"
+        print_success "drop: correctly fails for non-existing session"
     fi
 
     # Test current with mock session files
@@ -404,7 +404,7 @@ test_terminal_detection() {
 test_e2e_simulation() {
     print_section "End-to-End Simulation Tests"
 
-    local script="$PLUGIN_DIR/scripts/claude_session_saver_cli.py"
+    local script="$PLUGIN_DIR/scripts/stash.py"
     local test_db="$TEST_TEMP_DIR/e2e-sessions.json"
     local mock_project="$TEST_TEMP_DIR/.claude/projects/-Users-test"
 
@@ -423,7 +423,7 @@ EOF
     print_info "Simulating /stash:push..."
     local current_id=$(HOME="$TEST_TEMP_DIR" python3 "$script" current 2>/dev/null)
     if [ -n "$current_id" ]; then
-        SESSION_DB_PATH="$test_db" python3 "$script" save "E2E Test" "$current_id" >/dev/null
+        SESSION_DB_PATH="$test_db" python3 "$script" push "E2E Test" "$current_id" >/dev/null
         print_success "e2e push: saved session as 'E2E Test'"
     else
         print_error "e2e push: failed to get current session"
@@ -459,7 +459,7 @@ EOF
 
     # Simulate: /stash:drop "E2E Test"
     print_info "Simulating /stash:drop..."
-    SESSION_DB_PATH="$test_db" python3 "$script" delete "E2E Test" >/dev/null
+    SESSION_DB_PATH="$test_db" python3 "$script" drop "E2E Test" >/dev/null
     if ! SESSION_DB_PATH="$test_db" python3 "$script" get "E2E Test" 2>/dev/null; then
         print_success "e2e drop: session removed"
     else
@@ -473,21 +473,21 @@ EOF
 test_error_handling() {
     print_section "Error Handling Tests"
 
-    local script="$PLUGIN_DIR/scripts/claude_session_saver_cli.py"
+    local script="$PLUGIN_DIR/scripts/stash.py"
     local test_db="$TEST_TEMP_DIR/error-test.json"
 
-    # Test save with missing arguments
-    if python3 "$script" save 2>&1 | grep -qi "unknown\|invalid\|usage"; then
-        print_success "error: save with missing args shows usage"
+    # Test push with missing arguments
+    if python3 "$script" push 2>&1 | grep -qi "unknown\|invalid\|usage"; then
+        print_success "error: push with missing args shows usage"
     else
-        print_error "error: save should show usage with missing args"
+        print_error "error: push should show usage with missing args"
     fi
 
-    # Test save with only one argument
-    if python3 "$script" save "name" 2>&1 | grep -qi "unknown\|invalid\|usage"; then
-        print_success "error: save with one arg shows usage"
+    # Test push with only one argument
+    if python3 "$script" push "name" 2>&1 | grep -qi "unknown\|invalid\|usage"; then
+        print_success "error: push with one arg shows usage"
     else
-        print_error "error: save should show usage with one arg"
+        print_error "error: push should show usage with one arg"
     fi
 
     # Test get with missing argument
@@ -497,16 +497,16 @@ test_error_handling() {
         print_error "error: get should show usage with missing arg"
     fi
 
-    # Test delete with missing argument
-    if python3 "$script" delete 2>&1 | grep -qi "unknown\|invalid\|usage"; then
-        print_success "error: delete with missing arg shows usage"
+    # Test drop with missing argument
+    if python3 "$script" drop 2>&1 | grep -qi "unknown\|invalid\|usage"; then
+        print_success "error: drop with missing arg shows usage"
     else
-        print_error "error: delete should show usage with missing arg"
+        print_error "error: drop should show usage with missing arg"
     fi
 
     # Test with non-writable directory (if possible)
     local readonly_db="/nonexistent/path/sessions.json"
-    if ! SESSION_DB_PATH="$readonly_db" python3 "$script" save "test" "id" 2>/dev/null; then
+    if ! SESSION_DB_PATH="$readonly_db" python3 "$script" push "test" "id" 2>/dev/null; then
         print_success "error: handles non-writable path"
     else
         print_warning "error: non-writable path test inconclusive"

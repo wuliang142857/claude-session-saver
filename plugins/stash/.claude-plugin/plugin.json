@@ -1,7 +1,7 @@
 {
   "name": "stash",
   "description": "Save, list, and restore named Claude Code sessions for easy context switching. Inspired by git stash.",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "author": {
     "name": "wuliang142857",
     "email": "wuliang@wuliang142857.me",

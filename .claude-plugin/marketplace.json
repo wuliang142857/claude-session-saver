@@ -1,6 +1,6 @@
 {
   "name": "wuliang142857",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "wuliang142857's Claude Code plugins",
   "owner": {
     "name": "wuliang142857",
@@ -11,7 +11,7 @@
     {
       "name": "stash",
       "description": "Save, list, and restore named Claude Code sessions for easy context switching",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "source": "./plugins/stash",
       "category": "productivity"
     }

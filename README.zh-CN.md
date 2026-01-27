@@ -12,6 +12,29 @@
 | `/stash:list` | 列出所有已保存的会话 |
 | `/stash:pop "名称"` | 恢复指定名称的会话 |
 | `/stash:drop "名称"` | 删除指定名称的会话 |
+| `/stash:export "名称" "路径"` | 导出会话到 zip 文件 |
+| `/stash:export-all "路径"` | 导出所有会话到 zip 文件 |
+| `/stash:import "路径"` | 从 zip 文件导入会话 |
+
+## 导入/导出（跨机器迁移）
+
+会话可以导出为 zip 文件，并在另一台机器上导入：
+
+```bash
+# 导出单个会话
+/stash:export "my-session" "~/my-session.zip"
+
+# 导出所有会话
+/stash:export-all "~/all-sessions.zip"
+
+# 导入会话（默认跳过已存在的同名会话）
+/stash:import "~/all-sessions.zip"
+
+# 覆盖导入（替换已存在的会话）
+/stash:import "~/all-sessions.zip" --overwrite
+```
+
+导出文件包含会话映射和数据，方便在不同机器之间备份或迁移会话。
 
 ## 依赖
 
